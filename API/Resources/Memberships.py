@@ -1,5 +1,5 @@
 # API Endpoints related to the Memberships table
-from flask_restful import Api, Resource
+from flask_restful import Resource
 import mysql.connector
 
 connection = mysql.connector.connect(
@@ -12,5 +12,8 @@ cursor = connection.cursor()
 
 class ReadMemberships(Resource):
     def get(self):
-        cursor.execute("SELECT * FROM Memberships")
+        cursor.execute("SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip \
+                        FROM Memberships \
+                        JOIN Users ON Users.user_id = Memberships.user \
+                        JOIN Trips on Trips.trip_id = Memberships.trip")
         return cursor.fetchall()
