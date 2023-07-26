@@ -15,6 +15,9 @@ class HelloWorld(Resource):
     def get(self, name, test):
         return {"data": "Hello World!", "name": name, "test": test}
 
+# Create Queries
+api.add_resource(Users.CreateUsers, "/users/<string:email>/<string:password>/<string:first_name>/<string:last_name>")
+
 # Read Queries
 api.add_resource(HelloWorld, "/helloworld/<string:name>/<int:test>")
 api.add_resource(Users.ReadUsers, "/users")
