@@ -19,7 +19,6 @@ class HelloWorld(Resource):
 api.add_resource(Users.CreateUsers, "/users/<string:email>/<string:password>/<string:first_name>/<string:last_name>")
 
 # Read Queries
-api.add_resource(HelloWorld, "/helloworld/<string:name>/<int:test>")
 api.add_resource(Users.ReadUsers, "/users")
 api.add_resource(Trips.ReadTrips, "/trips")
 api.add_resource(Memberships.ReadMemberships, "/memberships")

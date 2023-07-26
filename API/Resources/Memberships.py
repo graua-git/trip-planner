@@ -12,7 +12,7 @@ cursor = connection.cursor()
 
 class ReadMemberships(Resource):
     def get(self):
-        cursor.execute("SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip \
+        cursor.execute("SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip, owner \
                         FROM Memberships \
                         JOIN Users ON Users.user_id = Memberships.user \
                         JOIN Trips on Trips.trip_id = Memberships.trip")
