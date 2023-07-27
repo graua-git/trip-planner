@@ -20,7 +20,9 @@ CREATE TABLE `Users` (
 -- Trips
 CREATE TABLE `Trips` (
     `trip_id` int AUTO_INCREMENT NOT NULL,
-    `name` char(20) NOT NULL,
+    `name` char(30) NOT NULL,
+    `start_date` char(10),
+    `end_date` char(10),
     PRIMARY KEY (`trip_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
@@ -29,7 +31,7 @@ CREATE TABLE `Memberships` (
     `membership_id` int AUTO_INCREMENT NOT NULL,
     `user` int NOT NULL,
     `trip` int NOT NULL,
-    `owner` boolean NOT NULL,
+    `owner` boolean NOT NULL DEFAULT 0,
     PRIMARY KEY (`membership_id`),
     FOREIGN KEY (`user`)
         REFERENCES Users(`user_id`)
@@ -77,7 +79,7 @@ CREATE TABLE `Expenses` (
     `date_created` char(10) NOT NULL,
     `time_created` char(8) NOT NULL,
     `amount` decimal(8,2) NOT NULL,
-    `settled` boolean NOT NULL,
+    `settled` boolean NOT NULL DEFAULT 0,
     PRIMARY KEY (`expense_id`),
     FOREIGN KEY (`trip`)
         REFERENCES Trips(`trip_id`)
@@ -90,7 +92,8 @@ CREATE TABLE `Expenses` (
     FOREIGN KEY (`owed_by`)
         REFERENCES Users(`user_id`)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT AmountBelowZero CHECK (amount > 0)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 -- Events
@@ -114,7 +117,6 @@ CREATE TABLE `Events` (
         ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
-
 -- SAMPLE DATA --
 
 -- Users
@@ -125,10 +127,10 @@ VALUES ('johndoe@email.com', 'password1234', 'John', 'Doe'),
         ('jesssmith@email.com', 'pass_word', 'Jess', 'Smith');
 
 -- Trips
-INSERT INTO `Trips` (`name`)
-VALUES ('Doe Trip'),
-        ('John Trip'),
-        ('Smith Trip');
+INSERT INTO `Trips` (`name`, `start_date`, `end_date`)
+VALUES ('Doe Trip', '2023-08-05', '2023-08-12'),
+        ('John Trip', '2021-06-24', '2021-07-02'),
+        ('Smith Trip', '2022-09-20', '2022-10-19');
 
 -- Memberships
 INSERT INTO `Memberships` (`user`, `trip`, `owner`)
