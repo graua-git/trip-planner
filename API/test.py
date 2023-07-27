@@ -8,10 +8,19 @@ user = {
     'email': 'alexgrau2@email.com',
     'password': 'UsablePassword'
 }
-
+trip = {
+    'name': 'Grau stimp',
+    'start_date': '2023-07-27',
+    'end_date': '2023-08-27'
+}
+membership = {
+    'user': 3,
+    'trip': 4,
+    'owner': 1
+}
 # ----------- CREATE -----------
 
-response = requests.post(BASE + "users", json=user)
+response = requests.post(BASE + "memberships", json=membership)
 if response.status_code == 200:
     print(response.status_code)
     print("Record created successfully!")
@@ -22,7 +31,7 @@ else:
     print(response.text)
 
 # ------------ READ ------------
-response = requests.get(BASE + "users")
+response = requests.get(BASE + "memberships")
 
 # ----------- UPDATE -----------
 
