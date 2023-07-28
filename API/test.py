@@ -3,24 +3,35 @@ import requests
 BASE = 'http://localhost:5000/'
 
 user = {
-    'first_name': 'Alex',
-    'last_name': 'Grau',
-    'email': 'alexgrau2@email.com',
-    'password': 'UsablePassword'
+    'first_name': 'TEST',
+    'last_name': 'USER',
+    'email': 'testuser@email.com',
+    'password': 'TESTPassword'
 }
 trip = {
-    'name': 'Grau stimp',
+    'name': 'TEST TRIP',
     'start_date': '2023-07-27',
     'end_date': '2023-08-27'
 }
 membership = {
-    'user': 3,
-    'trip': 4,
-    'owner': 1
+    'user': 1,
+    'trip': 1,
+    'owner': 0
 }
+task = {
+    'name': 'TEST TASK',
+    'trip': 1,
+    'assignee': 1,
+    'created_by': 1,
+    'date_created': '2023-07-27',
+    'time_created': '16:55:34',
+    'due_date': '2023-08-01',
+    'due_time': '23:59:59'
+}
+
 # ----------- CREATE -----------
 
-response = requests.post(BASE + "memberships", json=membership)
+response = requests.post(BASE + "tasks", json=task)
 if response.status_code == 200:
     print(response.status_code)
     print("Record created successfully!")

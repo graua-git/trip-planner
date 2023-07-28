@@ -82,6 +82,32 @@ def create_membership():
     return jsonify({'message': "Record updated successfully"})
 
 # ----------------------- Tasks -----------------------
+@app.route('/tasks', methods=['GET'])
+def read_tasks():
+    sql = "SELECT * FROM Tasks"
+    cursor.execute(sql)
+    return cursor.fetchall()
+
+@app.route('/tasks', methods=['POST'])
+def create_task():
+    # Data from POST request
+    task = request.get_json()
+    name = task.get('name')
+    trip = task.get('trip')
+    assignee = task.get('assignee')
+    created_by = task.get('created_by')
+    date_created = task.get('date_created')
+    time_created = task.get('time_created')
+    due_date = task.get('due_date')
+    due_time = task.get('due_time')
+    # Query database
+    sql = "INSERT INTO Tasks (name, trip, assignee, created_by, date_created, time_created, due_date, due_time) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    val = (name, trip, assignee, created_by, date_created, time_created, due_date, due_time)
+    cursor.execute(sql, val)
+    db.commit()
+    return jsonify({'message': "Record updated successfully"})
+
 # --------------------- Expenses ----------------------
 # ---------------------- Events -----------------------
 
