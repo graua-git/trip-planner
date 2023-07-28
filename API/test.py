@@ -1,7 +1,7 @@
 import requests
 
 BASE = 'http://localhost:5000/'
-EXTENSION = 'expenses'
+EXTENSION = 'users'
 URL = BASE + EXTENSION
 
 user = {
@@ -43,7 +43,7 @@ expense = {
 
 # ----------- CREATE -----------
 
-response = requests.post(URL, json=expense)
+response = requests.post(URL, json=user)
 if response.status_code == 200:
     print(response.status_code)
     print("Record created successfully!")

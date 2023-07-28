@@ -11,14 +11,21 @@ db = mysql.connector.connect(
 )
 cursor = db.cursor()
 
-# ------------------------------------ END POINTS ------------------------------------
+# --------------------------------- DATABASE QUERIES ---------------------------------
+def create(sql, val):
+    cursor.execute(sql, val)
+    db.commit()
+    return jsonify({'message': "Record updated successfully"})
 
+def read(sql):
+    cursor.execute(sql)
+    return cursor.fetchall()
+
+# ---------------------------------- API END POINTS ----------------------------------
 # ----------------------- Users -----------------------
 @app.route('/users', methods=['GET'])
 def read_users():
-    sql = "SELECT user_id, email, first_name, last_name FROM Users"
-    cursor.execute(sql)
-    return cursor.fetchall()
+    return(read("SELECT user_id, email, first_name, last_name FROM Users"))
 
 @app.route('/users', methods=['POST'])
 def create_user():
@@ -31,16 +38,12 @@ def create_user():
     # Query database
     sql = "INSERT INTO Users (email, password, first_name, last_name) VALUES (%s, %s, %s, %s)"
     val = (email, password, first_name, last_name)
-    cursor.execute(sql, val)
-    db.commit()
-    return jsonify({'message': "Record updated successfully"})
+    return create(sql, val)
 
 # ----------------------- Trips -----------------------
 @app.route('/trips', methods=['GET'])
 def read_trips():
-    sql = "SELECT * FROM Trips"
-    cursor.execute(sql)
-    return cursor.fetchall()
+    return(read("SELECT * FROM Trips"))
 
 @app.route('/trips', methods=['POST'])
 def create_trip():
@@ -52,19 +55,15 @@ def create_trip():
     # Query database
     sql = "INSERT INTO Trips (name, start_date, end_date) VALUES (%s, %s, %s)"
     val = (name, start_date, end_date)
-    cursor.execute(sql, val)
-    db.commit()
-    return jsonify({'message': "Record updated successfully"})
+    return create(sql, val)
 
 # -------------------- Memberships --------------------
 @app.route('/memberships', methods=['GET'])
 def read_memberships():
-    sql = "SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip, owner \
+    return(read("SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip, owner \
             FROM Memberships \
             JOIN Users ON Users.user_id = Memberships.user \
-            JOIN Trips on Trips.trip_id = Memberships.trip"
-    cursor.execute(sql)
-    return cursor.fetchall()
+            JOIN Trips on Trips.trip_id = Memberships.trip"))
 
 @app.route('/memberships', methods=['POST'])
 def create_membership():
@@ -77,16 +76,12 @@ def create_membership():
     sql = "INSERT INTO Memberships (user, trip, owner) VALUES (%s, %s, %s)"
     val = (user, trip, owner)
     print(sql, val)
-    cursor.execute(sql, val)
-    db.commit()
-    return jsonify({'message': "Record updated successfully"})
+    return create(sql, val)
 
 # ----------------------- Tasks -----------------------
 @app.route('/tasks', methods=['GET'])
 def read_tasks():
-    sql = "SELECT * FROM Tasks"
-    cursor.execute(sql)
-    return cursor.fetchall()
+    return(read("SELECT * FROM Tasks"))
 
 @app.route('/tasks', methods=['POST'])
 def create_task():
@@ -104,16 +99,12 @@ def create_task():
     sql = "INSERT INTO Tasks (name, trip, assignee, created_by, date_created, time_created, due_date, due_time) \
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     val = (name, trip, assignee, created_by, date_created, time_created, due_date, due_time)
-    cursor.execute(sql, val)
-    db.commit()
-    return jsonify({'message': "Record updated successfully"})
+    return create(sql, val)
 
 # --------------------- Expenses ----------------------
 @app.route('/expenses', methods=['GET'])
 def read_expenses():
-    sql = "SELECT * FROM Expenses"
-    cursor.execute(sql)
-    return cursor.fetchall()
+    return(read("SELECT * FROM Expenses"))
 
 @app.route('/expenses', methods=['POST'])
 def create_expense():
@@ -132,11 +123,11 @@ def create_expense():
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     val = (name, trip, owed_to, owed_by, date_created, time_created, amount, settled)
     print(sql, val)
-    cursor.execute(sql, val)
-    db.commit()
-    return jsonify({'message': "Record updated successfully"})
+    return create(sql, val)
 
 # ---------------------- Events -----------------------
 
+
+# ----------------------------------- DRIVER CODE ------------------------------------
 if __name__ == '__main__':
     app.run(debug=True)
