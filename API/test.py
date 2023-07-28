@@ -1,7 +1,7 @@
 import requests
 
 BASE = 'http://localhost:5000/'
-EXTENSION = 'memberships'
+EXTENSION = 'users'
 URL = BASE + EXTENSION
 
 user = {
@@ -52,14 +52,10 @@ event = {
 
 # ----------- CREATE -----------
 
-response = requests.post(URL, json=membership)
+response = requests.post(URL, json=user)
 if response.status_code == 200:
-    print(response.status_code)
-    print("Record created successfully!")
     print(response.json()) 
 else:
-    print(response.status_code)
-    print("Failed to create record!")
     print(response.text)
 
 # ------------ READ ------------
