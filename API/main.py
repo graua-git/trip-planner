@@ -109,6 +109,33 @@ def create_task():
     return jsonify({'message': "Record updated successfully"})
 
 # --------------------- Expenses ----------------------
+@app.route('/expenses', methods=['GET'])
+def read_expenses():
+    sql = "SELECT * FROM Expenses"
+    cursor.execute(sql)
+    return cursor.fetchall()
+
+@app.route('/expenses', methods=['POST'])
+def create_expense():
+    # Data from POST request
+    expense = request.get_json()
+    name = expense.get('name')
+    trip = expense.get('trip')
+    owed_to = expense.get('owed_to')
+    owed_by = expense.get('owed_by')
+    date_created = expense.get('date_created')
+    time_created = expense.get('time_created')
+    amount = expense.get('amount')
+    settled = expense.get('settled')
+    # Query database
+    sql = "INSERT INTO Expenses (name, trip, owed_to, owed_by, date_created, time_created, amount, settled) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    val = (name, trip, owed_to, owed_by, date_created, time_created, amount, settled)
+    print(sql, val)
+    cursor.execute(sql, val)
+    db.commit()
+    return jsonify({'message': "Record updated successfully"})
+
 # ---------------------- Events -----------------------
 
 if __name__ == '__main__':

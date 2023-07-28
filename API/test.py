@@ -1,6 +1,8 @@
 import requests
 
 BASE = 'http://localhost:5000/'
+EXTENSION = 'expenses'
+URL = BASE + EXTENSION
 
 user = {
     'first_name': 'TEST',
@@ -28,10 +30,20 @@ task = {
     'due_date': '2023-08-01',
     'due_time': '23:59:59'
 }
+expense = {
+    'name': 'TEST EXPENSE',
+    'trip': 1,
+    'owed_to': 1,
+    'owed_by': 2,
+    'date_created': '2023-07-27',
+    'time_created': '16:55:34',
+    'amount': 12345.67,
+    'settled': 0
+}
 
 # ----------- CREATE -----------
 
-response = requests.post(BASE + "tasks", json=task)
+response = requests.post(URL, json=expense)
 if response.status_code == 200:
     print(response.status_code)
     print("Record created successfully!")
@@ -42,7 +54,7 @@ else:
     print(response.text)
 
 # ------------ READ ------------
-response = requests.get(BASE + "memberships")
+response = requests.get(URL)
 
 # ----------- UPDATE -----------
 
