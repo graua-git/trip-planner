@@ -75,7 +75,6 @@ def create_membership():
     # Query database
     sql = "INSERT INTO Memberships (user, trip, owner) VALUES (%s, %s, %s)"
     val = (user, trip, owner)
-    print(sql, val)
     return create(sql, val)
 
 # ----------------------- Tasks -----------------------
@@ -122,11 +121,30 @@ def create_expense():
     sql = "INSERT INTO Expenses (name, trip, owed_to, owed_by, date_created, time_created, amount, settled) \
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     val = (name, trip, owed_to, owed_by, date_created, time_created, amount, settled)
-    print(sql, val)
     return create(sql, val)
 
 # ---------------------- Events -----------------------
+@app.route('/events', methods=['GET'])
+def read_events():
+    return read("SELECT * FROM Events")
 
+@app.route('/events', methods=['POST'])
+def create_event():
+    # Data from POST request
+    event = request.get_json()
+    print(event)
+    name = event.get('name')
+    trip = event.get('trip')
+    created_by = event.get('created_by')
+    from_date = event.get('from_date')
+    from_time = event.get('from_time')
+    to_date = event.get('to_date')
+    to_time = event.get('to_time')
+    # Query database
+    sql = "INSERT INTO Events (name, trip, created_by, from_date, from_time, to_date, to_time) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    val = (name, trip, created_by, from_date, from_time, to_date, to_time)
+    return create(sql, val)
 
 # ----------------------------------- DRIVER CODE ------------------------------------
 if __name__ == '__main__':

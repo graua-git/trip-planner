@@ -1,7 +1,7 @@
 import requests
 
 BASE = 'http://localhost:5000/'
-EXTENSION = 'users'
+EXTENSION = 'events'
 URL = BASE + EXTENSION
 
 user = {
@@ -40,10 +40,19 @@ expense = {
     'amount': 12345.67,
     'settled': 0
 }
+event = {
+    'name': 'TEST EVENT',
+    'trip': 1,
+    'created_by': 1,
+    'from_date': '2023-07-27',
+    'from_time': '16:55:34',
+    'to_date': '2023-08-01',
+    'to_time': '23:59:59'
+}
 
 # ----------- CREATE -----------
 
-response = requests.post(URL, json=user)
+response = requests.post(URL, json=event)
 if response.status_code == 200:
     print(response.status_code)
     print("Record created successfully!")
