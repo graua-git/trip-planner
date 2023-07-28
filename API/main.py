@@ -12,15 +12,36 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 # --------------------------------- DATABASE QUERIES ---------------------------------
-def create(sql, val):
-    cursor.execute(sql, val)
-    db.commit()
-    return jsonify({'message': "Record updated successfully"})
-
-def read(sql):
+def read(sql: str) -> list:
+    """
+    SELECT Query
+    sql: query
+    returns: list of lists representing table
+    """
     cursor.execute(sql)
     return cursor.fetchall()
 
+def create(entry: dict, table: str) -> dict:
+    """
+    INSERT INTO Query
+    entry: JSON Object representing row to insert
+    table: table to insert object into
+    returns: response message for MySQL
+    """
+    keys_str = "("
+    vals_str = "("
+    vals_data = []
+    for key, val in entry.items():
+        keys_str += key + ", "
+        vals_str += "%s, "
+        vals_data.append(val)
+    keys_str = keys_str[:-2] + ")"
+    vals_str = vals_str[:-2] + ")"
+    sql = f"INSERT INTO {table} " + keys_str + " VALUES " + vals_str
+    cursor.execute(sql, vals_data)
+    db.commit()
+    return jsonify({'message': "Record updated successfully"})
+    
 # ---------------------------------- API END POINTS ----------------------------------
 # ----------------------- Users -----------------------
 @app.route('/users', methods=['GET'])
@@ -29,16 +50,8 @@ def read_users():
 
 @app.route('/users', methods=['POST'])
 def create_user():
-    # Data from POST request
     user = request.get_json()
-    email = user.get('email')
-    password = user.get('password')
-    first_name = user.get('first_name')
-    last_name = user.get('last_name')
-    # Query database
-    sql = "INSERT INTO Users (email, password, first_name, last_name) VALUES (%s, %s, %s, %s)"
-    val = (email, password, first_name, last_name)
-    return create(sql, val)
+    return create(user, "Users")
 
 # ----------------------- Trips -----------------------
 @app.route('/trips', methods=['GET'])
@@ -47,15 +60,8 @@ def read_trips():
 
 @app.route('/trips', methods=['POST'])
 def create_trip():
-    # Data from POST request
     trip = request.get_json()
-    name = trip.get('name')
-    start_date = trip.get('start_date')
-    end_date = trip.get('end_date')
-    # Query database
-    sql = "INSERT INTO Trips (name, start_date, end_date) VALUES (%s, %s, %s)"
-    val = (name, start_date, end_date)
-    return create(sql, val)
+    return create(trip, "Trips")
 
 # -------------------- Memberships --------------------
 @app.route('/memberships', methods=['GET'])
@@ -67,15 +73,8 @@ def read_memberships():
 
 @app.route('/memberships', methods=['POST'])
 def create_membership():
-    # Data from POST request
     membership = request.get_json()
-    user = membership.get('user')
-    trip = membership.get('trip')
-    owner = membership.get('owner')
-    # Query database
-    sql = "INSERT INTO Memberships (user, trip, owner) VALUES (%s, %s, %s)"
-    val = (user, trip, owner)
-    return create(sql, val)
+    return create(membership, "Memberships")
 
 # ----------------------- Tasks -----------------------
 @app.route('/tasks', methods=['GET'])
@@ -84,21 +83,8 @@ def read_tasks():
 
 @app.route('/tasks', methods=['POST'])
 def create_task():
-    # Data from POST request
     task = request.get_json()
-    name = task.get('name')
-    trip = task.get('trip')
-    assignee = task.get('assignee')
-    created_by = task.get('created_by')
-    date_created = task.get('date_created')
-    time_created = task.get('time_created')
-    due_date = task.get('due_date')
-    due_time = task.get('due_time')
-    # Query database
-    sql = "INSERT INTO Tasks (name, trip, assignee, created_by, date_created, time_created, due_date, due_time) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    val = (name, trip, assignee, created_by, date_created, time_created, due_date, due_time)
-    return create(sql, val)
+    return create(task, "Tasks")
 
 # --------------------- Expenses ----------------------
 @app.route('/expenses', methods=['GET'])
@@ -107,21 +93,8 @@ def read_expenses():
 
 @app.route('/expenses', methods=['POST'])
 def create_expense():
-    # Data from POST request
     expense = request.get_json()
-    name = expense.get('name')
-    trip = expense.get('trip')
-    owed_to = expense.get('owed_to')
-    owed_by = expense.get('owed_by')
-    date_created = expense.get('date_created')
-    time_created = expense.get('time_created')
-    amount = expense.get('amount')
-    settled = expense.get('settled')
-    # Query database
-    sql = "INSERT INTO Expenses (name, trip, owed_to, owed_by, date_created, time_created, amount, settled) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    val = (name, trip, owed_to, owed_by, date_created, time_created, amount, settled)
-    return create(sql, val)
+    return create(expense, "Expenses")
 
 # ---------------------- Events -----------------------
 @app.route('/events', methods=['GET'])
@@ -130,21 +103,8 @@ def read_events():
 
 @app.route('/events', methods=['POST'])
 def create_event():
-    # Data from POST request
     event = request.get_json()
-    print(event)
-    name = event.get('name')
-    trip = event.get('trip')
-    created_by = event.get('created_by')
-    from_date = event.get('from_date')
-    from_time = event.get('from_time')
-    to_date = event.get('to_date')
-    to_time = event.get('to_time')
-    # Query database
-    sql = "INSERT INTO Events (name, trip, created_by, from_date, from_time, to_date, to_time) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    val = (name, trip, created_by, from_date, from_time, to_date, to_time)
-    return create(sql, val)
+    return create(event, "Events")
 
 # ----------------------------------- DRIVER CODE ------------------------------------
 if __name__ == '__main__':

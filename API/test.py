@@ -1,7 +1,7 @@
 import requests
 
 BASE = 'http://localhost:5000/'
-EXTENSION = 'events'
+EXTENSION = 'memberships'
 URL = BASE + EXTENSION
 
 user = {
@@ -16,7 +16,7 @@ trip = {
     'end_date': '2023-08-27'
 }
 membership = {
-    'user': 1,
+    'user': 5,
     'trip': 1,
     'owner': 0
 }
@@ -52,7 +52,7 @@ event = {
 
 # ----------- CREATE -----------
 
-response = requests.post(URL, json=event)
+response = requests.post(URL, json=membership)
 if response.status_code == 200:
     print(response.status_code)
     print("Record created successfully!")
