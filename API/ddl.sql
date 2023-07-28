@@ -40,7 +40,8 @@ CREATE TABLE `Memberships` (
     FOREIGN KEY (`trip`)
         REFERENCES Trips(`trip_id`)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT unique_user_trip UNIQUE(`user`, `trip`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 -- Tasks
