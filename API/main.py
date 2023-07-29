@@ -126,6 +126,18 @@ def delete_user(user_id):
 def read_trips():
     return read("SELECT * FROM Trips")
 
+@app.route('/mytrips/<int:user_id>', methods=['GET'])
+def read_my_trips(user_id):
+    return read(f"SELECT name, start_date, end_date, organizer \
+                    FROM Trips \
+                    JOIN Memberships ON Memberships.trip = Trips.trip_id \
+                    JOIN Users ON Users.user_id = Memberships.user \
+                    JOIN (SELECT trip, owner, CONCAT(Users.first_name, ' ', Users.last_name) as organizer \
+                    FROM Memberships \
+                    JOIN Users ON Users.user_id = Memberships.user \
+                    WHERE owner = 1) as Owners ON  Trips.trip_id = Owners.trip \
+                    WHERE Users.user_id = {user_id}")
+
 @app.route('/trips', methods=['POST'])
 def create_trip():
     return create(request.get_json(), "Trips")
@@ -191,4 +203,4 @@ def update_event(event_id):
 
 # ----------------------------------- DRIVER CODE ------------------------------------
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
