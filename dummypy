@@ -1,0 +1,3 @@
+table = "Memberships"
+id_name = table.lower()[:-1] + "_id"
+print(id_name)

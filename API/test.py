@@ -1,14 +1,14 @@
 import requests
 
 BASE = 'http://localhost:5000/'
-EXTENSION = 'users'
+EXTENSION = 'events'
 URL = BASE + EXTENSION
 
 user = {
-    'first_name': 'TEST',
-    'last_name': 'USER',
-    'email': 'testuser@email.com',
-    'password': 'TESTPassword'
+    'first_name': 'UPDATED',
+    'last_name': 'TESTUSER',
+    'email': 'updated@email.com',
+    'password': 'updated'
 }
 trip = {
     'name': 'TEST TRIP',
@@ -21,7 +21,7 @@ membership = {
     'owner': 0
 }
 task = {
-    'name': 'TEST TASK',
+    'name': 'UPDATED TEST TASK',
     'trip': 1,
     'assignee': 1,
     'created_by': 1,
@@ -41,7 +41,7 @@ expense = {
     'settled': 0
 }
 event = {
-    'name': 'TEST EVENT',
+    'name': 'UPDATE TEST',
     'trip': 1,
     'created_by': 1,
     'from_date': '2023-07-27',
@@ -51,18 +51,19 @@ event = {
 }
 
 # ----------- CREATE -----------
-
+"""
 response = requests.post(URL, json=user)
 if response.status_code == 200:
     print(response.json()) 
 else:
     print(response.text)
-
-# ------------ READ ------------
-response = requests.get(URL)
-
+"""
 # ----------- UPDATE -----------
+response = requests.put(URL + '/5', json=event)
+print(response.json())
 
 # ----------- DELETE -----------
 
+# ------------ READ ------------
+response = requests.get(URL)
 print(response.json())
