@@ -1,4 +1,5 @@
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import MainPage from "./pages/MainPage"
 import HomePage from "./pages/HomePage";
 
 function App() {
@@ -6,7 +7,8 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route exact path='/' element={<HomePage />}></Route>
+          <Route exact path="/" element={<MainPage />} />
+          <Route exact path="/home" element={<HomePage />} />
         </Routes>
       </div>
     </Router>
