@@ -161,7 +161,7 @@ def read_my_trips(user_id):
             JOIN Users ON Users.user_id = Memberships.user \
             WHERE owner = 1) as Owners ON  Trips.trip_id = Owners.trip \
             WHERE Users.user_id = {user_id}"
-    headers = ['name', 'start_date', 'organizer']
+    headers = ['name', 'start_date', 'end_date', 'organizer']
     return read(sql, headers)
 
 @app.route('/trips', methods=['POST'])
