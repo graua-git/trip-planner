@@ -1,7 +1,8 @@
 import requests
 
 BASE = 'http://localhost:5000/'
-EXTENSION = 'events'
+EXTENSION = 'users'
+ID = '/1'
 URL = BASE + EXTENSION
 
 user = {
@@ -50,19 +51,25 @@ event = {
     'to_time': '23:59:59'
 }
 
-# ----------- CREATE -----------
 """
+
+# ----------- CREATE -----------
+
 response = requests.post(URL, json=user)
 if response.status_code == 200:
     print(response.json()) 
 else:
     print(response.text)
-"""
-# ----------- UPDATE -----------
-response = requests.put(URL + '/5', json=event)
-print(response.json())
 
+# ----------- UPDATE -----------
+
+response = requests.put(URL + ID, json=event)
+print(response.json())
+"""
 # ----------- DELETE -----------
+
+response = requests.delete(URL + ID, json=user)
+print(response.json())
 
 # ------------ READ ------------
 response = requests.get(URL)

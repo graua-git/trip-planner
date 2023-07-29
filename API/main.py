@@ -43,7 +43,7 @@ def create(entry: dict, table: str) -> dict:
     INSERT INTO Query
     entry: JSON Object representing row to insert
     table: table to insert object into
-    returns: response message for MySQL
+    returns: response message from MySQL
     """
     try:
         entry_dict = parse_json(entry)
@@ -72,7 +72,7 @@ def update(entry: dict, table: str, id: int) -> dict:
     entry: JSON Object representing row to insert
     table: table to insert object into
     id: id# of object to update
-    returns: response message for MySQL
+    returns: response message from MySQL
     """
     try:
         id_name = table.lower()[:-1] + "_id"
@@ -90,12 +90,24 @@ def update(entry: dict, table: str, id: int) -> dict:
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+def delete(sql: str) -> dict:
+    """
+    DELETE Query
+    sql: query
+    returns: list of lists representing table
+    """
+    try:
+        cursor.execute(sql)
+        db.commit()
+        return jsonify({'message': str(cursor.rowcount) + " record(s) deleted"}), 200
+    except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 # ---------------------------------- API END POINTS ----------------------------------
 # ----------------------- Users -----------------------
 @app.route('/users', methods=['GET'])
 def read_users():
-    return(read("SELECT user_id, email, first_name, last_name FROM Users"))
+    return read("SELECT user_id, email, first_name, last_name FROM Users")
 
 @app.route('/users', methods=['POST'])
 def create_user():
@@ -105,10 +117,14 @@ def create_user():
 def update_user(user_id):
     return update(request.get_json(), "Users", user_id)
 
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    return delete(f"DELETE FROM Users WHERE user_id = {user_id}")
+
 # ----------------------- Trips -----------------------
 @app.route('/trips', methods=['GET'])
 def read_trips():
-    return(read("SELECT * FROM Trips"))
+    return read("SELECT * FROM Trips")
 
 @app.route('/trips', methods=['POST'])
 def create_trip():
@@ -121,10 +137,10 @@ def update_trip(trip_id):
 # -------------------- Memberships --------------------
 @app.route('/memberships', methods=['GET'])
 def read_memberships():
-    return(read("SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip, owner \
+    return read("SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip, owner \
             FROM Memberships \
             JOIN Users ON Users.user_id = Memberships.user \
-            JOIN Trips on Trips.trip_id = Memberships.trip"))
+            JOIN Trips on Trips.trip_id = Memberships.trip")
 
 @app.route('/memberships', methods=['POST'])
 def create_membership():
@@ -137,7 +153,7 @@ def update_membership(membership_id):
 # ----------------------- Tasks -----------------------
 @app.route('/tasks', methods=['GET'])
 def read_tasks():
-    return(read("SELECT * FROM Tasks"))
+    return read("SELECT * FROM Tasks")
 
 @app.route('/tasks', methods=['POST'])
 def create_task():
@@ -150,7 +166,7 @@ def update_task(task_id):
 # --------------------- Expenses ----------------------
 @app.route('/expenses', methods=['GET'])
 def read_expenses():
-    return(read("SELECT * FROM Expenses"))
+    return read("SELECT * FROM Expenses")
 
 @app.route('/expenses', methods=['POST'])
 def create_expense():
