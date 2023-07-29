@@ -1,8 +1,14 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import mysql.connector
 
 app = Flask(__name__)
 
+# Add Access for web app
+CORS(app)
+CORS(app, origins=['http://localhost.com'])
+
+# Create DB connection
 db = mysql.connector.connect(
     host='localhost',
     user='root',

@@ -1,7 +1,7 @@
 import requests
 
 BASE = 'http://localhost:5000/'
-EXTENSION = 'users'
+EXTENSION = 'mytrips'
 ID = '/1'
 URL = BASE + EXTENSION
 
@@ -65,12 +65,12 @@ else:
 
 response = requests.put(URL + ID, json=event)
 print(response.json())
-"""
+
 # ----------- DELETE -----------
 
 response = requests.delete(URL + ID, json=user)
 print(response.json())
-
+"""
 # ------------ READ ------------
-response = requests.get(URL)
+response = requests.get(URL + ID)
 print(response.json())
