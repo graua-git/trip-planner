@@ -115,6 +115,10 @@ def delete(sql: str) -> dict:
 def read_users():
     return read("SELECT user_id, email, first_name, last_name FROM Users")
 
+@app.route('user/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    return read(f"SELECT * FROM Users WHERE user_id = {user_id}")
+
 @app.route('/users', methods=['POST'])
 def create_user():
     return create(request.get_json(), "Users")
