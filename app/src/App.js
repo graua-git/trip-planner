@@ -1,6 +1,4 @@
-import url from './api.json'
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import { useState, useEffect } from 'react';
 import MainPage from "./pages/MainPage"
 import HomePage from "./pages/HomePage";
 
