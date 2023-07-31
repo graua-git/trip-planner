@@ -2,6 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 
+ALL = "all"
+ONE = "one"
+
 app = Flask(__name__)
 
 # Add Access for web app
@@ -60,12 +63,13 @@ def create(entry: dict, table: str) -> dict:
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-def read(sql: str, headers: list) -> list:
+def read(sql: str, headers: list, quantity: str = ALL) -> list:
     """
     SELECT Query
     sql: query
     headers: list of column names (str) in order
     returns: list of lists representing table
+    quantity: "one" or "all"
     """
     try:
         cursor.execute(sql)
@@ -76,7 +80,10 @@ def read(sql: str, headers: list) -> list:
             for i, col in enumerate(row):
                 new_row[headers[i]] = col
             result.append(new_row)
-        return result
+        if quantity == "one":
+            return result[0]
+        else:
+            return result
     except Exception as e:
             return jsonify({'error': str(e)}), 500
 
@@ -129,7 +136,7 @@ def read_users():
 def get_user(user_id):
     sql = f"SELECT user_id, email, first_name, last_name FROM Users WHERE user_id = {user_id}"
     headers = ['user_id', 'email', 'first_name', 'last_name']
-    return read(sql, headers)
+    return read(sql, headers, ONE)
 
 @app.route('/users', methods=['POST'])
 def create_user():
