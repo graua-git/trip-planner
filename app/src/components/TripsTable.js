@@ -6,10 +6,12 @@ export default function TripsTable({trips, removeTrip}) {
             <table>
                 <caption>My Trips</caption>
                 <thead>
-                    <th>Trip</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Organizer</th>
+                    <tr>
+                        <th>Trip</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Organizer</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {trips.map((trip, i) => <TripsRow trip={trip} removeTrip={removeTrip} key={i} />)}

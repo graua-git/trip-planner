@@ -4,13 +4,19 @@ import { useState, useEffect } from 'react';
 import TripsTable from '../components/TripsTable';
 
 export default function Homepage() {
-
+    const [user, setUser] = useState([]);
     const [trips, setTrips] = useState([]);
 
+    const loadUser = async () => {
+        const response = await fetch(url['url'] + `/user/1`);
+        const user = await response.json();
+        console.log(user);
+        setUser(user);
+    }
+
     const loadTrips = async () => {
-        const response = await fetch(url['url'] + '/mytrips/1');
+        const response = await fetch(url['url'] + `/mytrips/${user.user_id}`);
         const trips = await response.json();
-        // const trips = [["Doe Trip","2023-08-05","2023-08-12","John Doe"],["John Trip","2021-06-24","2021-07-02","John Doe"]]
         setTrips(trips);
     }
 
@@ -26,12 +32,13 @@ export default function Homepage() {
 
     useEffect(() => {
         loadTrips();
+        loadUser();
     }, []);
 
     return (
         <div>
             <h1>TriPlanner</h1>
-            <h2>Welcome</h2>
+            <h2>Welcome{", " + user.first_name}</h2>
             <TripsTable trips={trips} removeTrip={removeTrip}/>
         </div>
   )
