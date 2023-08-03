@@ -2,6 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 
+ALL = "all"
+ONE = "one"
+
 app = Flask(__name__)
 
 # Add Access for web app
@@ -60,15 +63,27 @@ def create(entry: dict, table: str) -> dict:
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-def read(sql: str) -> list:
+def read(sql: str, headers: list, quantity: str = ALL) -> list:
     """
     SELECT Query
     sql: query
+    headers: list of column names (str) in order
     returns: list of lists representing table
+    quantity: "one" or "all"
     """
     try:
         cursor.execute(sql)
-        return cursor.fetchall()
+        table = cursor.fetchall()
+        result = []
+        for row in table:
+            new_row = dict()
+            for i, col in enumerate(row):
+                new_row[headers[i]] = col
+            result.append(new_row)
+        if quantity == "one":
+            return result[0]
+        else:
+            return result
     except Exception as e:
             return jsonify({'error': str(e)}), 500
 
@@ -113,7 +128,15 @@ def delete(sql: str) -> dict:
 # ----------------------- Users -----------------------
 @app.route('/users', methods=['GET'])
 def read_users():
-    return read("SELECT user_id, email, first_name, last_name FROM Users")
+    sql = "SELECT user_id, email, first_name, last_name FROM Users"
+    headers = ['user_id', 'email', 'first_name', 'last_name']
+    return read(sql, headers)
+
+@app.route('/user/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    sql = f"SELECT user_id, email, first_name, last_name FROM Users WHERE user_id = {user_id}"
+    headers = ['user_id', 'email', 'first_name', 'last_name']
+    return read(sql, headers, ONE)
 
 @app.route('/users', methods=['POST'])
 def create_user():
@@ -130,19 +153,23 @@ def delete_user(user_id):
 # ----------------------- Trips -----------------------
 @app.route('/trips', methods=['GET'])
 def read_trips():
-    return read("SELECT * FROM Trips")
+    sql = "SELECT * FROM Trips"
+    headers = ['trip_id', 'name', 'start_date', 'end_date']
+    return read(sql, headers)
 
 @app.route('/mytrips/<int:user_id>', methods=['GET'])
 def read_my_trips(user_id):
-    return read(f"SELECT name, start_date, end_date, organizer \
-                    FROM Trips \
-                    JOIN Memberships ON Memberships.trip = Trips.trip_id \
-                    JOIN Users ON Users.user_id = Memberships.user \
-                    JOIN (SELECT trip, owner, CONCAT(Users.first_name, ' ', Users.last_name) as organizer \
-                    FROM Memberships \
-                    JOIN Users ON Users.user_id = Memberships.user \
-                    WHERE owner = 1) as Owners ON  Trips.trip_id = Owners.trip \
-                    WHERE Users.user_id = {user_id}")
+    sql = f"SELECT name, start_date, end_date, organizer \
+            FROM Trips \
+            JOIN Memberships ON Memberships.trip = Trips.trip_id \
+            JOIN Users ON Users.user_id = Memberships.user \
+            JOIN (SELECT trip, owner, CONCAT(Users.first_name, ' ', Users.last_name) as organizer \
+            FROM Memberships \
+            JOIN Users ON Users.user_id = Memberships.user \
+            WHERE owner = 1) as Owners ON  Trips.trip_id = Owners.trip \
+            WHERE Users.user_id = {user_id}"
+    headers = ['name', 'start_date', 'end_date', 'organizer']
+    return read(sql, headers)
 
 @app.route('/trips', methods=['POST'])
 def create_trip():
@@ -155,10 +182,12 @@ def update_trip(trip_id):
 # -------------------- Memberships --------------------
 @app.route('/memberships', methods=['GET'])
 def read_memberships():
-    return read("SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip, owner \
+    sql = "SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip, owner \
             FROM Memberships \
             JOIN Users ON Users.user_id = Memberships.user \
-            JOIN Trips on Trips.trip_id = Memberships.trip")
+            JOIN Trips on Trips.trip_id = Memberships.trip"
+    headers = ['membership_id', 'participant_name', 'email', 'trip', 'owner']
+    return read(sql, headers)
 
 @app.route('/memberships', methods=['POST'])
 def create_membership():
@@ -171,7 +200,9 @@ def update_membership(membership_id):
 # ----------------------- Tasks -----------------------
 @app.route('/tasks', methods=['GET'])
 def read_tasks():
-    return read("SELECT * FROM Tasks")
+    sql = "SELECT * FROM Tasks"
+    headers = ['task_id', 'name', 'trip', 'assignee', 'created_by', 'date_created', 'time_created', 'due_date', 'due_time']
+    return read(sql, headers)
 
 @app.route('/tasks', methods=['POST'])
 def create_task():
@@ -184,7 +215,9 @@ def update_task(task_id):
 # --------------------- Expenses ----------------------
 @app.route('/expenses', methods=['GET'])
 def read_expenses():
-    return read("SELECT * FROM Expenses")
+    sql = "SELECT * FROM Expenses"
+    headers = ['expense_id', 'name', 'trip', 'owed_to', 'owed_by', 'date_created', 'time_created', 'amount', 'settled']
+    return read(sql, headers)
 
 @app.route('/expenses', methods=['POST'])
 def create_expense():
@@ -197,7 +230,9 @@ def update_expense(expense_id):
 # ---------------------- Events -----------------------
 @app.route('/events', methods=['GET'])
 def read_events():
-    return read("SELECT * FROM Events")
+    sql = "SELECT * FROM Events"
+    headers = ['event_id', 'name', 'trip', 'created_by', 'from_date', 'from_time', 'to_date', 'to_time']
+    return read(sql, headers)
 
 @app.route('/events', methods=['POST'])
 def create_event():

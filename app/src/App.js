@@ -1,4 +1,6 @@
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import MainPage from "./pages/MainPage";
+import LoginPage from "./pages/LoginPage"
 import HomePage from "./pages/HomePage";
 
 function App() {
@@ -6,7 +8,9 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route exact path='/' element={<HomePage />}></Route>
+          <Route exact path="/" element={<MainPage />} />
+          <Route exact path="/home" element={<HomePage />} />
+          <Route exact path="/login" element={<LoginPage />} />
         </Routes>
       </div>
     </Router>
