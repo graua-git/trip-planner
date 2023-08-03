@@ -43,13 +43,8 @@ td, th {
   padding: 8px;
 }
 
-tr:nth-child(even){
-  background-color: #373737;
-  color: #f2f2f2
-}
-
 tr:hover {
-  background-color: #427185;
+  background-color: #373737;
   color: #f2f2f2;
 }
 
