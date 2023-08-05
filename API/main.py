@@ -138,10 +138,12 @@ def get_user(user_id):
     headers = ['user_id', 'email', 'first_name', 'last_name']
     return read(sql, headers, ONE)
 
-@app.route('/users/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def login():
     user = request.get_json()
-    sql = f"SELECT user_id FROM Users WHERE email = '{user.email}' AND password = '{user.password}'"
+    sql = f"SELECT user_id FROM Users WHERE email = '{user['email']}' AND password = '{user['password']}'"
+    headers = ['user_id']
+    return read(sql, headers)
 
 @app.route('/users', methods=['POST'])
 def create_user():
