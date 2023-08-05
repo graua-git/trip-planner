@@ -9,11 +9,11 @@ export default function Homepage() {
     const [trips, setTrips] = useState([]);
 
     const loadUserInfo = async () => {
-        const user_response = await fetch(url['url'] + `/user/1`);
+        const user_response = await fetch(url['url'] + `/user/1`, {method: 'GET'});
         const user = await user_response.json();
         setUser(user);
 
-        const trips_response = await fetch(url['url'] + `/mytrips/${user.user_id}`);
+        const trips_response = await fetch(url['url'] + `/mytrips/${user.user_id}`, {method: 'GET'});
         const trips = await trips_response.json();
         setTrips(trips);
 

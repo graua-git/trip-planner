@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 # Add Access for web app
 CORS(app)
-CORS(app, origins=['http://localhost.com'])
+CORS(app, origins=['http://localhost:3000'])
 
 # Create DB connection
 db = mysql.connector.connect(
@@ -137,6 +137,13 @@ def get_user(user_id):
     sql = f"SELECT user_id, email, first_name, last_name FROM Users WHERE user_id = {user_id}"
     headers = ['user_id', 'email', 'first_name', 'last_name']
     return read(sql, headers, ONE)
+
+@app.route('/login', methods=['POST'])
+def login():
+    user = request.get_json()
+    sql = f"SELECT user_id FROM Users WHERE email = '{user['email']}' AND password = '{user['password']}'"
+    headers = ['user_id']
+    return read(sql, headers)
 
 @app.route('/users', methods=['POST'])
 def create_user():
