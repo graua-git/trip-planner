@@ -11,7 +11,7 @@ export default function Homepage() {
         const { name, value } = event.target;
         setFormData((prevFormData) => ({
             ...prevFormData,
-            [name]: value,
+            [name]: value
         }));
     }
 
