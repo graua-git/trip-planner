@@ -35,13 +35,9 @@ export default function Homepage() {
     return (
         <form onSubmit={handleLogin}>
             <h3>Login</h3>
-            <label for="email">Email: </label>
+            <input type="text" name="email" placeholder="Email" value={formData.email} onChange={handleFormChange} required />
             <br />
-            <input type="text" name="email" placeholder="email" value={formData.email} onChange={handleFormChange} required />
-            <br />
-            <label for="password">Password: </label>
-            <br />
-            <input type="text" name="password" placeholder="password" value={formData.password} onChange={handleFormChange} required />
+            <input type="text" name="password" placeholder="Password" value={formData.password} onChange={handleFormChange} required />
             <br />
             <button type="submit">Login</button>
 
