@@ -1,7 +1,10 @@
-import url from '../api.json'
-import { useState } from 'react';
+import url from "../api.json";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateAccountPage() {
+    const navigate = useNavigate();
+
     const [accountData, setAccountData] = useState({
         email: "",
         password: "",
@@ -27,6 +30,7 @@ export default function CreateAccountPage() {
             .then((response) => response.json())
             .then((data) => {
                 console.log("Login successful: ", data);
+                navigate('/home');
             })
             .catch((error) => {
                 console.log("Error during account creation", error);

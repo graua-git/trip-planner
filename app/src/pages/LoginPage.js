@@ -1,7 +1,10 @@
-import url from '../api.json'
-import { useState } from 'react';
+import url from "../api.json";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Homepage() {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -24,6 +27,7 @@ export default function Homepage() {
             .then((response) => response.json())
             .then((data) => {
                 console.log("Login successful: ", data);
+                navigate('/home')
             })
             .catch((error) => {
                 console.error("Error during login:", error);
