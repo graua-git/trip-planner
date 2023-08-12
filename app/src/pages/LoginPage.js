@@ -17,15 +17,13 @@ export default function Homepage() {
 
     const handleLogin = (event) => {
         event.preventDefault();
-        console.log(formData);
-        console.log(JSON.stringify(formData));
         fetch(url['url'] + `/login`, {
             method: 'POST', 
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formData)})
             .then((response) => response.json())
             .then((data) => {
-                console.log("Login Successful:", data);
+                console.log("Login successful: ", data);
             })
             .catch((error) => {
                 console.error("Error during login:", error);
