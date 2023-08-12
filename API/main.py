@@ -145,7 +145,7 @@ def login():
     headers = ['user_id']
     return read(sql, headers)
 
-@app.route('/users', methods=['POST'])
+@app.route('/create-account', methods=['POST'])
 def create_user():
     return create(request.get_json(), "Users")
     
