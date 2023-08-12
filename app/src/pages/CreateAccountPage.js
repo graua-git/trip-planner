@@ -18,7 +18,19 @@ export default function CreateAccountPage() {
     }
 
     const handleCreateAccount = (event) => {
+        event.preventDefault();
         console.log(accountData);
+        fetch(url['url'] + `/create-account`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(accountData)})
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Login successful: ", data);
+            })
+            .catch((error) => {
+                console.log("Error during account creation", error);
+            });
     }
 
     return (
