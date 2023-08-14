@@ -26,7 +26,8 @@ export default function Homepage() {
             body: JSON.stringify(formData)})
             .then((response) => response.json())
             .then((data) => {
-                console.log("Login successful: ", data);
+                localStorage.setItem('token', data.token);
+                console.log("Login successful");
                 navigate('/home')
             })
             .catch((error) => {
