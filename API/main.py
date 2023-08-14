@@ -1,11 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
+import jwt
+from datetime import datetime, timedelta
 
 ALL = "all"
 ONE = "one"
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'cMIWy0a1M7iZAf1LpYtHAKGl=2xmX5ex97qRSl9Z4ec9Xhy2KVAgy7ZUaPciJPSbruSB?'
 
 # Add Access for web app
 CORS(app)
@@ -140,10 +143,23 @@ def get_user(user_id):
 
 @app.route('/login', methods=['POST'])
 def login():
+    # Validate User
     user = request.get_json()
     sql = f"SELECT user_id FROM Users WHERE email = '{user['email']}' AND password = '{user['password']}'"
     headers = ['user_id']
-    return read(sql, headers)
+    try:
+        user_id = read(sql, headers, ONE)['user_id']
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+    # Generate Token
+    expires = datetime.utcnow() + timedelta(hours=1)
+    payload = {
+        'user_id': user_id,
+        'expires': expires.isoformat()
+    }
+    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+    return jsonify({'token': token})
 
 @app.route('/create-account', methods=['POST'])
 def create_user():
