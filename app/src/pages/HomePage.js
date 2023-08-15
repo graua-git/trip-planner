@@ -9,46 +9,56 @@ export default function Homepage() {
     const [trips, setTrips] = useState([]);
     const token = localStorage.getItem('token');
     
-    const loadUserInfo = async () => {
-        const user_response = await fetch(url['url'] + '/user', {
+    const loadUser = async () => {
+        // Get User
+        fetch(url['url'] + '/user', {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        });
-        const user = await user_response.json();
-        setUser(user);
-
-        const trips_response = await fetch(url['url'] + `/mytrips/${user.user_id}`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        const trips = await trips_response.json();
-        setTrips(trips);
-
-        let greeting = "";
-        if (user != undefined) {
-            greeting = ", " + user.first_name;
-        }
-        setGreeting(greeting)
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const user = data;
+                setUser(user);
+                let greeting = "";
+                if (user != undefined) {
+                    greeting = ", " + user.first_name;
+                }
+                setGreeting(greeting);
+                loadTrips();
+            })
+            .catch((error) => {
+                console.error("Error during loading: ", error);
+            });
     }
 
+    const loadTrips = async () => {
+        fetch(url['url'] + `/mytrips`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const trips = data;
+                console.log(trips)
+                setTrips(trips);
+            })
+            .catch((error) => {
+                console.error("Error during loading: ", error);
+            });
+    }
+        
+
     const removeTrip = async trip_id => {
-        const response = await fetch(`http://localhost:5000/trips/${trip_id}`, {method: 'DELETE'})
-        if (response.status === 204) {
-            loadUserInfo();
-            alert('Trip deleted successfully.');
-        } else {
-            console.error(`Failed to delete the trip with id = ${trip_id}, status code = ${response.status}`)
-        }
+        // ! Not implemented
     }
 
     useEffect(() => {
-        loadUserInfo();
+        loadUser();
     }, []);
-
 
     return (
         <div>
