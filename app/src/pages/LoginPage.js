@@ -28,6 +28,7 @@ export default function Homepage() {
             .then((data) => {
                 localStorage.setItem('token', data.token);
                 console.log("Login successful");
+                console.log(localStorage.getItem('token'));
                 navigate('/home')
             })
             .catch((error) => {
