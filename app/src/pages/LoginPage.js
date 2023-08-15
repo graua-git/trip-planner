@@ -23,7 +23,8 @@ export default function Homepage() {
         fetch(url['url'] + `/login`, {
             method: 'POST', 
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(formData)})
+            body: JSON.stringify(formData)
+        })
             .then((response) => response.json())
             .then((data) => {
                 localStorage.setItem('token', data.token);
