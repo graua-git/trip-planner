@@ -207,8 +207,14 @@ def read_trips():
     headers = ['trip_id', 'name', 'start_date', 'end_date']
     return read(sql, headers)
 
-@app.route('/mytrips/<int:user_id>', methods=['GET'])
-def read_my_trips(user_id):
+@app.route('/mytrips', methods=['GET'])
+def read_my_trips():
+    # Validate token
+    user_id = validate(request)
+    if not isinstance(user_id, int):
+        return user_id
+    
+    # Query database
     sql = f"SELECT name, start_date, end_date, organizer \
             FROM Trips \
             JOIN Memberships ON Memberships.trip = Trips.trip_id \
