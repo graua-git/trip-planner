@@ -160,6 +160,8 @@ def read_users():
 def get_user():
     # Validate token
     user_id = validate(request)
+    if not isinstance(user_id, int):
+        return user_id
     
     # Query database
     sql = f"SELECT user_id, email, first_name, last_name FROM Users WHERE user_id = {user_id}"
