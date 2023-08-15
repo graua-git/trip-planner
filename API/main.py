@@ -24,6 +24,27 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 # --------------------------------- DATABASE QUERIES ---------------------------------
+def validate(request) -> int:
+    """
+    Decorator function to validate token from HTTP request
+    request: HTTP request
+    returns: int, user_id IF token is valid ELSE error message
+    """
+    token = request.headers.get('Authorization', 'NONE')
+    
+    if not token or not token.startswith('Bearer '):
+        return jsonify({'message': 'Token is missing'}), 401
+    token = token.replace('Bearer ', '')
+
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        return payload.get('user_id')
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token has expired'}), 401
+    except jwt.DecodeError:
+        return jsonify({'message': 'Invalid token'}), 401
+
+
 def parse_json(entry: dict) -> dict:
     """
     Parses JSON object into strings to use for queries
@@ -135,8 +156,12 @@ def read_users():
     headers = ['user_id', 'email', 'first_name', 'last_name']
     return read(sql, headers)
 
-@app.route('/user/<int:user_id>', methods=['GET'])
-def get_user(user_id):
+@app.route('/user', methods=['GET'])
+def get_user():
+    # Validate token
+    user_id = validate(request)
+    
+    # Query database
     sql = f"SELECT user_id, email, first_name, last_name FROM Users WHERE user_id = {user_id}"
     headers = ['user_id', 'email', 'first_name', 'last_name']
     return read(sql, headers, ONE)
@@ -267,4 +292,4 @@ def update_event(event_id):
 
 # ----------------------------------- DRIVER CODE ------------------------------------
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
