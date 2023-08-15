@@ -7,13 +7,24 @@ export default function Homepage() {
     const [user, setUser] = useState([]);
     const [greeting, setGreeting] = useState([]);
     const [trips, setTrips] = useState([]);
-
+    const token = localStorage.getItem('token');
+    
     const loadUserInfo = async () => {
-        const user_response = await fetch(url['url'] + `/user/1`, {method: 'GET'});
+        const user_response = await fetch(url['url'] + '/user', {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         const user = await user_response.json();
         setUser(user);
 
-        const trips_response = await fetch(url['url'] + `/mytrips/${user.user_id}`, {method: 'GET'});
+        const trips_response = await fetch(url['url'] + `/mytrips/${user.user_id}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         const trips = await trips_response.json();
         setTrips(trips);
 
