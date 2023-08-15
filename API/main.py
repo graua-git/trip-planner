@@ -24,11 +24,11 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 # --------------------------------- DATABASE QUERIES ---------------------------------
-def validate(request) -> int:
+def validate(request):
     """
     Decorator function to validate token from HTTP request
     request: HTTP request
-    returns: int, user_id IF token is valid ELSE error message
+    returns: int, user_id IF token is valid ELSE dict, message
     """
     token = request.headers.get('Authorization', 'NONE')
     
