@@ -11,7 +11,7 @@ export default function Homepage() {
     
     const loadUser = async () => {
         // Get User
-        fetch(url['url'] + '/user', {
+        fetch(url['url'] + '/users/read-one', {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`

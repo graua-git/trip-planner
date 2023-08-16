@@ -3,7 +3,7 @@ import jwt
 import json
 from datetime import datetime, timedelta
 
-location = 'API/Endpoints/QueryFunctions/key.json'
+location = 'API/Endpoints/key.json'
 
 def write_key():
     """
@@ -44,11 +44,11 @@ def validate_token(request):
     except jwt.DecodeError:
         return jsonify({'message': 'Invalid token'}), 401
     
-def generate_token(user_id) -> dict:
+def generate_token(user_id) -> str:
     """
     Generates token for client
     user_id: user_id in database
-    returns: dict, token
+    returns: str, token
     """
     expires = datetime.utcnow() + timedelta(hours=1)
     payload = {
@@ -56,4 +56,4 @@ def generate_token(user_id) -> dict:
         'expires': expires.isoformat()
     }
     token = jwt.encode(payload, read_key(), algorithm='HS256')
-    return jsonify({'token': token})
+    return token

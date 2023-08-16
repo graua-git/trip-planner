@@ -20,7 +20,7 @@ export default function Homepage() {
 
     const handleLogin = (event) => {
         event.preventDefault();
-        fetch(url['url'] + `/login`, {
+        fetch(url['url'] + `/users/login`, {
             method: 'POST', 
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formData)
