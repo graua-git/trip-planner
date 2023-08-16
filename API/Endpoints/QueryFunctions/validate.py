@@ -4,7 +4,7 @@ from Endpoints.QueryFunctions.key import read_key
 
 def validate(request):
     """
-    Decorator function to validate token from HTTP request
+    Validates token from HTTP request
     request: HTTP request
     returns: int, user_id IF token is valid ELSE dict, message
     """

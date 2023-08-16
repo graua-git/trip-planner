@@ -3,10 +3,7 @@ from flask_cors import CORS
 import jwt
 from datetime import datetime, timedelta
 
-from Endpoints.QueryFunctions.create import create
-from Endpoints.QueryFunctions.read import read
-from Endpoints.QueryFunctions.update import update
-from Endpoints.QueryFunctions.delete import delete
+from Endpoints.QueryFunctions.crud import create, read, update, delete
 from Endpoints.QueryFunctions.validate import validate
 
 ALL = "all"
