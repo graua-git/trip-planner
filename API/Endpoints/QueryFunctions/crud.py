@@ -1,6 +1,14 @@
 from flask import jsonify
-from Endpoints.QueryFunctions.db_connetion import db, cursor
+import mysql.connector
 from Endpoints.QueryFunctions.parse_json import parse_json
+
+db = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='password',
+    database='triplannerdb'
+)
+cursor = db.cursor()
 
 def create(entry: dict, table: str) -> dict:
     """
