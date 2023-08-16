@@ -1,11 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import jwt
-from datetime import datetime, timedelta
 
 from Endpoints.crud import create, read, update, delete
-from Endpoints.token import validate_token
-from Endpoints.users import user_bp
+from Endpoints.users import users_bp
+from Endpoints.trips import trips_bp
 
 ALL = "all"
 ONE = "one"
@@ -18,42 +16,9 @@ CORS(app)
 CORS(app, resources={r"/*": {'origins': 'http://localhost:3000'}})
 
 # ---------------------------------- API END POINTS ----------------------------------
-app.register_blueprint(user_bp, url_prefix='/users')
+app.register_blueprint(users_bp, url_prefix='/users')
+app.register_blueprint(trips_bp, url_prefix='/trips')
 
-# ----------------------- Trips -----------------------
-@app.route('/trips', methods=['GET'])
-def read_trips():
-    sql = "SELECT * FROM Trips"
-    headers = ['trip_id', 'name', 'start_date', 'end_date']
-    return read(sql, headers)
-
-@app.route('/mytrips', methods=['GET'])
-def read_my_trips():
-    # Validate token
-    user_id = validate_token(request)
-    if not isinstance(user_id, int):
-        return user_id
-    
-    # Query database
-    sql = f"SELECT name, start_date, end_date, organizer \
-            FROM Trips \
-            JOIN Memberships ON Memberships.trip = Trips.trip_id \
-            JOIN Users ON Users.user_id = Memberships.user \
-            JOIN (SELECT trip, owner, CONCAT(Users.first_name, ' ', Users.last_name) as organizer \
-            FROM Memberships \
-            JOIN Users ON Users.user_id = Memberships.user \
-            WHERE owner = 1) as Owners ON  Trips.trip_id = Owners.trip \
-            WHERE Users.user_id = {user_id}"
-    headers = ['name', 'start_date', 'end_date', 'organizer']
-    return read(sql, headers)
-
-@app.route('/trips', methods=['POST'])
-def create_trip():
-    return create(request.get_json(), "Trips")
-
-@app.route('/trips/<int:trip_id>', methods=['PUT'])
-def update_trip(trip_id):
-    return update(request.get_json(), "Trips", trip_id)
 
 # -------------------- Memberships --------------------
 @app.route('/memberships', methods=['GET'])

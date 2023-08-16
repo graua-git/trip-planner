@@ -34,7 +34,7 @@ export default function Homepage() {
     }
 
     const loadTrips = async () => {
-        fetch(url['url'] + `/mytrips`, {
+        fetch(url['url'] + `/trips/mytrips`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`
