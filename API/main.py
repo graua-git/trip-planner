@@ -25,19 +25,6 @@ app.register_blueprint(tasks_bp, url_prefix='/tasks')
 
 
 # --------------------- Expenses ----------------------
-@app.route('/expenses', methods=['GET'])
-def read_expenses():
-    sql = "SELECT * FROM Expenses"
-    headers = ['expense_id', 'name', 'trip', 'owed_to', 'owed_by', 'date_created', 'time_created', 'amount', 'settled']
-    return read(sql, headers)
-
-@app.route('/expenses', methods=['POST'])
-def create_expense():
-    return create(request.get_json(), "Expenses")
-
-@app.route('/expenses/<int:expense_id>', methods=['PUT'])
-def update_expense(expense_id):
-    return update(request.get_json(), "Expenses", expense_id)
 
 # ---------------------- Events -----------------------
 @app.route('/events', methods=['GET'])
