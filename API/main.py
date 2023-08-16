@@ -3,8 +3,9 @@ from flask_cors import CORS
 import jwt
 from datetime import datetime, timedelta
 
-from Endpoints.QueryFunctions.crud import create, read, update, delete
-from Endpoints.QueryFunctions.validate import validate
+from Endpoints.crud import create, read, update, delete
+from Endpoints.token import validate_token
+from Endpoints.users import user_bp
 
 ALL = "all"
 ONE = "one"
@@ -14,59 +15,10 @@ app.config['SECRET_KEY'] = 'cMIWy0a1M7iZAf1LpYtHAKGl=2xmX5ex97qRSl9Z4ec9Xhy2KVAg
 
 # Add Access for web app
 CORS(app)
-CORS(app, origins=['http://localhost:3000'])
+CORS(app, resources={r"/*": {'origins': 'http://localhost:3000'}})
 
 # ---------------------------------- API END POINTS ----------------------------------
-# ----------------------- Users -----------------------
-@app.route('/users', methods=['GET'])
-def read_users():
-    sql = "SELECT user_id, email, first_name, last_name FROM Users"
-    headers = ['user_id', 'email', 'first_name', 'last_name']
-    return read(sql, headers)
-
-@app.route('/user', methods=['GET'])
-def get_user():
-    # Validate token
-    user_id = validate(request)
-    if not isinstance(user_id, int):
-        return user_id
-    
-    # Query database
-    sql = f"SELECT user_id, email, first_name, last_name FROM Users WHERE user_id = {user_id}"
-    headers = ['user_id', 'email', 'first_name', 'last_name']
-    return read(sql, headers, ONE)
-
-@app.route('/login', methods=['POST'])
-def login():
-    # Validate User
-    user = request.get_json()
-    sql = f"SELECT user_id FROM Users WHERE email = '{user['email']}' AND password = '{user['password']}'"
-    headers = ['user_id']
-    try:
-        user_id = read(sql, headers, ONE)['user_id']
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    
-    # Generate Token
-    expires = datetime.utcnow() + timedelta(hours=1)
-    payload = {
-        'user_id': user_id,
-        'expires': expires.isoformat()
-    }
-    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
-    return jsonify({'token': token})
-
-@app.route('/create-account', methods=['POST'])
-def create_user():
-    return create(request.get_json(), "Users")
-    
-@app.route('/users/<int:user_id>', methods=['PUT'])
-def update_user(user_id):
-    return update(request.get_json(), "Users", user_id)
-
-@app.route('/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    return delete(f"DELETE FROM Users WHERE user_id = {user_id}")
+app.register_blueprint(user_bp, url_prefix='/users')
 
 # ----------------------- Trips -----------------------
 @app.route('/trips', methods=['GET'])
@@ -78,7 +30,7 @@ def read_trips():
 @app.route('/mytrips', methods=['GET'])
 def read_my_trips():
     # Validate token
-    user_id = validate(request)
+    user_id = validate_token(request)
     if not isinstance(user_id, int):
         return user_id
     

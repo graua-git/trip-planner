@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from datetime import datetime, timedelta
 
 from Endpoints.crud import create, read, update, delete
 from Endpoints.token import validate_token, generate_token
@@ -43,10 +42,10 @@ def login():
 def create_user():
     return create(request.get_json(), "Users")
     
-@user_bp.route('/update-user', methods=['PUT'])
+@user_bp.route('/update', methods=['PUT'])
 def update_user(user_id):
     return update(request.get_json(), "Users", user_id)
 
-@user_bp.route('/delete-user', methods=['DELETE'])
+@user_bp.route('/delete', methods=['DELETE'])
 def delete_user(user_id):
     return delete(f"DELETE FROM Users WHERE user_id = {user_id}")
