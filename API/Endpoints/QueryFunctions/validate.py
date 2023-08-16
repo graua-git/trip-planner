@@ -1,6 +1,6 @@
 from flask import jsonify
 import jwt
-from key import read_key
+from Endpoints.QueryFunctions.key import read_key
 
 def validate(request):
     """
