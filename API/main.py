@@ -5,6 +5,7 @@ from Endpoints.crud import create, read, update, delete
 from Endpoints.users import users_bp
 from Endpoints.trips import trips_bp
 from Endpoints.memberships import memberships_bp
+from Endpoints.tasks import tasks_bp
 
 ALL = "all"
 ONE = "one"
@@ -16,28 +17,12 @@ app.config['SECRET_KEY'] = 'cMIWy0a1M7iZAf1LpYtHAKGl=2xmX5ex97qRSl9Z4ec9Xhy2KVAg
 CORS(app)
 CORS(app, resources={r"/*": {'origins': 'http://localhost:3000'}})
 
-# ---------------------------------- API END POINTS ----------------------------------
+# Blueprints
 app.register_blueprint(users_bp, url_prefix='/users')
 app.register_blueprint(trips_bp, url_prefix='/trips')
 app.register_blueprint(memberships_bp, url_prefix='/memberships')
+app.register_blueprint(tasks_bp, url_prefix='/tasks')
 
-# -------------------- Memberships --------------------
-
-
-# ----------------------- Tasks -----------------------
-@app.route('/tasks', methods=['GET'])
-def read_tasks():
-    sql = "SELECT * FROM Tasks"
-    headers = ['task_id', 'name', 'trip', 'assignee', 'created_by', 'date_created', 'time_created', 'due_date', 'due_time']
-    return read(sql, headers)
-
-@app.route('/tasks', methods=['POST'])
-def create_task():
-    return create(request.get_json(), "Tasks")
-
-@app.route('/tasks/<int:task_id>', methods=['PUT'])
-def update_task(task_id):
-    return update(request.get_json(), "Tasks", task_id)
 
 # --------------------- Expenses ----------------------
 @app.route('/expenses', methods=['GET'])
