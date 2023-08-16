@@ -4,6 +4,7 @@ from flask_cors import CORS
 from Endpoints.crud import create, read, update, delete
 from Endpoints.users import users_bp
 from Endpoints.trips import trips_bp
+from Endpoints.memberships import memberships_bp
 
 ALL = "all"
 ONE = "one"
@@ -18,25 +19,10 @@ CORS(app, resources={r"/*": {'origins': 'http://localhost:3000'}})
 # ---------------------------------- API END POINTS ----------------------------------
 app.register_blueprint(users_bp, url_prefix='/users')
 app.register_blueprint(trips_bp, url_prefix='/trips')
-
+app.register_blueprint(memberships_bp, url_prefix='/memberships')
 
 # -------------------- Memberships --------------------
-@app.route('/memberships', methods=['GET'])
-def read_memberships():
-    sql = "SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip, owner \
-            FROM Memberships \
-            JOIN Users ON Users.user_id = Memberships.user \
-            JOIN Trips on Trips.trip_id = Memberships.trip"
-    headers = ['membership_id', 'participant_name', 'email', 'trip', 'owner']
-    return read(sql, headers)
 
-@app.route('/memberships', methods=['POST'])
-def create_membership():
-    return create(request.get_json(), "Memberships")
-
-@app.route('/memberships/<int:membership_id>', methods=['PUT'])
-def update_membership(membership_id):
-    return update(request.get_json(), "Memberships", membership_id)
 
 # ----------------------- Tasks -----------------------
 @app.route('/tasks', methods=['GET'])
