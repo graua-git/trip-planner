@@ -7,12 +7,21 @@ users_bp = Blueprint('users', __name__)
 
 @users_bp.route('/read-all', methods=['GET'])
 def read_users():
+    """
+    Returns
+    user_id | email | first_name | last_name
+    """
     sql = "SELECT user_id, email, first_name, last_name FROM Users"
     headers = ['user_id', 'email', 'first_name', 'last_name']
     return read(sql, headers)
 
 @users_bp.route('/read-one', methods=['GET'])
 def get_user():
+    """
+    Returns
+    user_id | email | first_name | last_name
+    Where user_id = user_id from token
+    """
     # Validate token
     user_id = validate_token(request)
     if not isinstance(user_id, int):
@@ -25,6 +34,9 @@ def get_user():
 
 @users_bp.route('/login', methods=['POST'])
 def login():
+    """
+    Validates user credentials and generates a token
+    """
     # Validate User
     user = request.get_json()
     sql = f"SELECT user_id FROM Users WHERE email = '{user['email']}' AND password = '{user['password']}'"
@@ -40,12 +52,21 @@ def login():
 
 @users_bp.route('/create-account', methods=['POST'])
 def create_user():
+    """
+    Creates user, requires info from json
+    """
     return create(request.get_json(), "Users")
     
 @users_bp.route('/update', methods=['PUT'])
 def update_user(user_id):
+    """
+    Updates user, requires info from json
+    """
     return update(request.get_json(), "Users", user_id)
 
 @users_bp.route('/delete', methods=['DELETE'])
 def delete_user(user_id):
+    """
+    Deletes user
+    """
     return delete(f"DELETE FROM Users WHERE user_id = {user_id}")
