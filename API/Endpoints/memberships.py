@@ -7,6 +7,10 @@ memberships_bp = Blueprint('memberships', __name__)
 
 @memberships_bp.route('/read-all', methods=['GET'])
 def read_memberships():
+    """
+    Returns
+    membership_id | participant_name | email | trip | owner
+    """
     sql = "SELECT membership_id, CONCAT(first_name, ' ', last_name) AS participant_name, email, name AS trip, owner \
             FROM Memberships \
             JOIN Users ON Users.user_id = Memberships.user \
@@ -16,8 +20,14 @@ def read_memberships():
 
 @memberships_bp.route('/create', methods=['POST'])
 def create_membership():
+    """
+    Creates membership, requires info from json
+    """
     return create(request.get_json(), "Memberships")
 
 @memberships_bp.route('/update/<int:membership_id>', methods=['PUT'])
 def update_membership(membership_id):
+    """
+    Updates membership, requires info from json
+    """
     return update(request.get_json(), "Memberships", membership_id)
